@@ -9,7 +9,6 @@ import 'package:todo_list_app/src/features/tasks/domain/usecases/create_task.dar
 import 'package:todo_list_app/src/features/tasks/domain/usecases/update_task.dart';
 import 'package:todo_list_app/src/features/tasks/domain/usecases/delete_task.dart';
 import 'package:todo_list_app/src/features/tasks/presentation/bloc/task_bloc.dart';
-// import 'package:todo_list_app/src/features/tasks/presentation/pages/task_list_page.dart';
 import 'package:todo_list_app/src/features/greetings/presentation/welcome_page.dart';
 
 void main() {
@@ -40,37 +39,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Task Manager', home: const WelcomePage());
+    return MaterialApp(
+      title: 'Task',
+      home: const WelcomePage(),
+    ); // setting halaman awal WelcomePage
   }
 }
-
-// class MyApp extends StatelessWidget {
-//   final GetTasks getTasksUseCase;
-//   final CreateTask createTaskUseCase;
-//   final UpdateTask updateTaskUseCase;
-//   final DeleteTask deleteTaskUseCase;
-
-//   const MyApp({
-//     super.key,
-//     required this.getTasksUseCase,
-//     required this.createTaskUseCase,
-//     required this.updateTaskUseCase,
-//     required this.deleteTaskUseCase,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Task Manager',
-//       home: BlocProvider(
-//         create: (_) => TaskBloc(
-//           getTasks: getTasksUseCase,
-//           createTask: createTaskUseCase,
-//           updateTask: updateTaskUseCase,
-//           deleteTask: deleteTaskUseCase,
-//         ),
-//         child: const TaskListPage(),
-//       ),
-//     );
-//   }
-// }

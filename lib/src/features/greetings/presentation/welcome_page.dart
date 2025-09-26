@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../tasks/presentation/pages/task_list_page.dart';
 import '../../tasks/presentation/bloc/task_bloc.dart';
 
+// halaman paling awal aplikasi,
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
@@ -12,6 +13,7 @@ class WelcomePage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final isTablet = screenWidth > 600;
 
+    // ada dua tampilan, satu untuk tablet (landscape), satu untuk hp (portrait)
     return Scaffold(
       backgroundColor: Colors.deepPurple,
       body: SafeArea(

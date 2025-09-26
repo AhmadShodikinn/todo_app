@@ -4,15 +4,7 @@ import '../../domain/entities/task.dart';
 import '../bloc/task_bloc.dart';
 import '../bloc/task_event.dart';
 
-// class UpdateTaskPage extends StatefulWidget {
-//   final Task task;
-
-//   const UpdateTaskPage({super.key, required this.task});
-
-//   @override
-//   State<UpdateTaskPage> createState() => _UpdateTaskPageState();
-// }
-
+// component kecil untuk mengupdate task yang sudah ada, bedanya kalau yang ini nerima data task yang mau diubah
 void showUpdateTaskSheet(BuildContext context, Task task) {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController(
@@ -77,6 +69,7 @@ void showUpdateTaskSheet(BuildContext context, Task task) {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       final updatedTask = Task(
+                        userId: task.userId,
                         id: task.id,
                         title: _titleController.text,
                         isCompleted: task.isCompleted,

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_list_app/src/features/tasks/domain/entities/task.dart';
-import 'package:todo_list_app/src/features/tasks/presentation/pages/update_task_page.dart';
+import 'package:todo_list_app/src/features/tasks/presentation/components/update_task_page.dart';
 import '../bloc/task_bloc.dart';
 import '../bloc/task_event.dart';
 import '../bloc/task_state.dart';
 import '../widgets/rename_list_dialog.dart';
-import 'create_task_page.dart';
+import '../components/create_task_page.dart';
 
 class TaskListPage extends StatefulWidget {
   const TaskListPage({super.key});
@@ -270,6 +270,7 @@ class _TaskListPageState extends State<TaskListPage> {
                                 borderRadius: BorderRadius.circular(50),
                                 onTap: () {
                                   final updateTask = Task(
+                                    userId: task.userId,
                                     id: task.id,
                                     title: task.title,
                                     isCompleted: !task.isCompleted,

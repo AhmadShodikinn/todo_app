@@ -1,5 +1,7 @@
 import '../../domain/entities/task.dart';
 
+// task event digunakan sebagai perintah atau aksi yang mau dilakukan sama pengguna, bedanya sama task_state, kalau state itu keluaran/hasil dari event yang dilakukan
+
 abstract class TaskEvent {}
 
 class LoadTaskEvent extends TaskEvent {}

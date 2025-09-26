@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+// widgets ini dipisah, untuk menampilkan fitur perubahan nama list
+
 class RenameListDialog extends StatelessWidget {
-  final String initialValue;
+  final String initialValue; // value awal aplikasi, data disimpan secara statis, bukan dari database
   final ValueChanged<String> onRename;
 
   const RenameListDialog({

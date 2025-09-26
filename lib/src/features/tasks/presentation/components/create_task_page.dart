@@ -4,6 +4,7 @@ import '../bloc/task_bloc.dart';
 import '../bloc/task_event.dart';
 import '../../domain/entities/task.dart';
 
+// component kecil untuk menambahkan task baru
 void showCreateTaskSheet(BuildContext context) {
   final formKey = GlobalKey<FormState>();
   final TextEditingController titleController = TextEditingController();
@@ -66,6 +67,7 @@ void showCreateTaskSheet(BuildContext context) {
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
                       final newTask = Task(
+                        userId: 1,
                         id: 0,
                         title: titleController.text,
                         isCompleted: false,

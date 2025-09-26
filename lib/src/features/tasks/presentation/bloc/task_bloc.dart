@@ -6,6 +6,9 @@ import '../../domain/usecases/delete_task.dart';
 import 'task_event.dart';
 import 'task_state.dart';
 
+// Bloc (Business Logic Component) digunakan untuk mengelola state aplikasi berdasarkan event yang terjadi,
+// komunikasinya dimulai dari segi UI (awal)->task event(mau ngapain)->task bloc(diproses logikanya)->task state(status permintaanya tadi apa)->kembali ke UI(akhir)
+
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final GetTasks getTasks;
   final CreateTask createTask;
@@ -28,6 +31,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       }
     });
 
+    // contoh logika bisnis dari addTask, dia ngecek dulu statenya apa, kalau loaded, dia ambil data task yang ada,
+    // terus nambahin task baru, terus emit (ngasi respon) state success, baru emit state loaded lagi
     on<AddTaskEvent>((event, emit) async {
       if (state is TaskLoaded) {
         final currentState = state as TaskLoaded;
