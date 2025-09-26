@@ -7,7 +7,8 @@ import '../../domain/entities/task.dart';
 // component kecil untuk menambahkan task baru
 void showCreateTaskSheet(BuildContext context) {
   final formKey = GlobalKey<FormState>();
-  final TextEditingController titleController = TextEditingController();
+  final TextEditingController titleController =
+      TextEditingController(); // controller untuk mengambil inputan dari user
 
   showModalBottomSheet(
     context: context,
@@ -65,12 +66,13 @@ void showCreateTaskSheet(BuildContext context) {
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                   onPressed: () {
+                    // validasi inputan user
                     if (formKey.currentState!.validate()) {
                       final newTask = Task(
                         userId: 1,
-                        id: 0,
+                        id: 0, // id 0 karena akan digenerate oleh api server
                         title: titleController.text,
-                        isCompleted: false,
+                        completed: false,
                       );
 
                       context.read<TaskBloc>().add(AddTaskEvent(newTask));

@@ -13,7 +13,7 @@ abstract class TaskDataSources {
 class TaskDataSourcesImpl implements TaskDataSources {
   final ApiClient apiClient;
 
-  // bedanya TaskDataSources diatas sama yang ini, kalau yang TaskDataSourcesImpl ini implementasinya, jadi isinya benar benar ada kodenya
+  // bedanya TaskDataSources (abstract) diatas sama yang ini, kalau yang TaskDataSourcesImpl ini implementasinya (login pengiriman ke sumber data / API)
   TaskDataSourcesImpl({required this.apiClient});
 
   @override

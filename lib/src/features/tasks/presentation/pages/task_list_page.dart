@@ -16,7 +16,7 @@ class TaskListPage extends StatefulWidget {
 }
 
 class _TaskListPageState extends State<TaskListPage> {
-  String listTitle = 'Today Task';
+  String listTitle = 'Today Task'; // default title
 
   @override
   void initState() {
@@ -41,6 +41,7 @@ class _TaskListPageState extends State<TaskListPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TaskBloc, TaskState>(
+      // listener digunakan untuk menampilkan informasi berdasarkan task_state yang terjadi di bloc
       listener: (context, state) {
         if (state is TaskSuccess && state.message != null) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -73,9 +74,9 @@ class _TaskListPageState extends State<TaskListPage> {
                   int completed = 0;
                   if (state is TaskLoaded) {
                     total = state.tasks.length;
-                    completed = state.tasks.where((t) => t.isCompleted).length;
+                    completed = state.tasks.where((t) => t.completed).length;
                   }
-                  //container selurunya
+                  //container seluruh halaman
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     color: Colors.transparent,
@@ -269,11 +270,12 @@ class _TaskListPageState extends State<TaskListPage> {
                               InkWell(
                                 borderRadius: BorderRadius.circular(50),
                                 onTap: () {
+                                  // logika toggle ubah status task selesai/belum selesai
                                   final updateTask = Task(
                                     userId: task.userId,
                                     id: task.id,
                                     title: task.title,
-                                    isCompleted: !task.isCompleted,
+                                    completed: !task.completed,
                                   );
                                   context.read<TaskBloc>().add(
                                     UpdateTaskEvent(updateTask),
@@ -288,7 +290,7 @@ class _TaskListPageState extends State<TaskListPage> {
                                       color: Colors.grey.shade400,
                                       width: 1.5,
                                     ),
-                                    color: task.isCompleted
+                                    color: task.completed
                                         ? Colors.deepPurple
                                         : Colors.transparent,
                                   ),
@@ -304,10 +306,10 @@ class _TaskListPageState extends State<TaskListPage> {
                                     task.title,
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: task.isCompleted
+                                      color: task.completed
                                           ? Colors.grey
                                           : Colors.black,
-                                      decoration: task.isCompleted
+                                      decoration: task.completed
                                           ? TextDecoration.lineThrough
                                           : TextDecoration.none,
                                     ),

@@ -4,7 +4,7 @@ import '../datasources/task_datasources.dart';
 import '../models/task_model.dart';
 
 // menghubungkan repository dengan data source
-// bedanya sama yang data/datasources/task_datasources.dart, kalau yang itu menghubungkan data source dengan api client (ngambilk data dari server)
+// bedanya sama yang data/datasources/task_datasources.dart, kalau yang itu menghubungkan data source dengan api client (mengambil data dari server)
 // kalau yang ini digunakan sebagai jembatan penghubung antara data source sama domain (nyediakan data yang sudah diambil dari data source)
 class TaskRepositoryData implements TaskRepository {
   final TaskDataSources dataSources;

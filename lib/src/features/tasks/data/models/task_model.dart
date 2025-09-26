@@ -6,8 +6,8 @@ class TaskModel extends Task {
     required int userId,
     required int id,
     required String title,
-    bool isCompleted = false,
-  }) : super(userId: userId, id: id, title: title, isCompleted: isCompleted);
+    bool completed = false,
+  }) : super(userId: userId, id: id, title: title, completed: completed);
 
   // fungsi untuk mengubah dari json ke TaskModel dan sebaliknya (dua data berikut merupakan converter)
   // tujuannya mempermudah proses komunikasi antara sistem dan API
@@ -16,18 +16,13 @@ class TaskModel extends Task {
       userId: json['userId'],
       id: json['id'],
       title: json['title'],
-      isCompleted: json['isCompleted'] ?? false,
+      completed: json['completed'] ?? false,
     );
   }
 
   // mengubah dari TaskModel ke json
   Map<String, dynamic> toJson() {
-    return {
-      'userId': userId,
-      'id': id,
-      'title': title,
-      'isCompleted': isCompleted,
-    };
+    return {'userId': userId, 'id': id, 'title': title, 'completed': completed};
   }
 
   factory TaskModel.fromEntity(Task task) {
@@ -35,11 +30,11 @@ class TaskModel extends Task {
       userId: task.userId,
       id: task.id,
       title: task.title,
-      isCompleted: task.isCompleted,
+      completed: task.completed,
     );
   }
 
   Task toEntity() {
-    return Task(userId: userId, id: id, title: title, isCompleted: isCompleted);
+    return Task(userId: userId, id: id, title: title, completed: completed);
   }
 }

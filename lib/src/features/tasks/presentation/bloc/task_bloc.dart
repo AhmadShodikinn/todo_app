@@ -53,7 +53,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         final currentState = state as TaskLoaded;
 
         try {
-          final updatedTask = await updateTask(event.task); // bisa throw
+          final updatedTask = await updateTask(event.task);
           final updatedTasks = currentState.tasks.map((t) {
             return t.id == updatedTask.id ? updatedTask : t;
           }).toList();

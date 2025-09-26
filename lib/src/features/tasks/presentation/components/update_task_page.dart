@@ -9,7 +9,7 @@ void showUpdateTaskSheet(BuildContext context, Task task) {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController(
     text: task.title,
-  );
+  ); // controller untuk mengambil inputan dari user, bedanya kalau yang ini nerima data task yang mau diubah
 
   showModalBottomSheet(
     context: context,
@@ -67,12 +67,13 @@ void showUpdateTaskSheet(BuildContext context, Task task) {
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                   onPressed: () {
+                    // proses update task hanya berlaku kepada title/judul task saja, untuk logika selesai atau tidaknya akan dilakukan di halaman list task
                     if (_formKey.currentState!.validate()) {
                       final updatedTask = Task(
                         userId: task.userId,
                         id: task.id,
                         title: _titleController.text,
-                        isCompleted: task.isCompleted,
+                        completed: task.completed, // status task tidak diubah
                       );
 
                       context.read<TaskBloc>().add(

@@ -5,12 +5,12 @@ class Task {
   final int userId;
   final int id;
   final String title;
-  final bool isCompleted;
+  final bool completed;
 
   Task({
     required this.userId,
     required this.id,
     required this.title,
-    this.isCompleted = false,
+    this.completed = false,
   });
 }

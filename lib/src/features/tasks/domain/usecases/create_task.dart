@@ -7,7 +7,7 @@ class CreateTask {
 
   CreateTask(
     this.repository,
-  ); // memamnggil fungsi yang bisa digunakan di domain/repository/repository_domain tadi
+  ); // memanggil fungsi yang bisa digunakan di domain/repository/repository_domain tadi
 
   Future<Task> call(Task task) async {
     return await repository.createTask(task);
