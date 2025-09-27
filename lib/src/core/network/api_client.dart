@@ -54,9 +54,9 @@ class ApiClient {
       }
 
       // jaga jaga kalau mau logging, apa yang dikirim dan diterima sama server
-      print('Request: $method $uri');
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      // print('Request: $method $uri');
+      // print('Response status: ${response.statusCode}');
+      // print('Response body: ${response.body}');
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         if (response.body.isNotEmpty) {

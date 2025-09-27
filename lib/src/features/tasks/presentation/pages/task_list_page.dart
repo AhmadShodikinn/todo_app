@@ -52,7 +52,7 @@ class _TaskListPageState extends State<TaskListPage> {
               duration: const Duration(seconds: 1),
             ),
           );
-        } else if (state is TaskError) {
+        } else if (state is TaskFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
@@ -72,10 +72,15 @@ class _TaskListPageState extends State<TaskListPage> {
                 builder: (context, state) {
                   int total = 0;
                   int completed = 0;
+
                   if (state is TaskLoaded) {
                     total = state.tasks.length;
                     completed = state.tasks.where((t) => t.completed).length;
+                  } else if (state is TaskFailure) {
+                    total = state.tasks.length;
+                    completed = state.tasks.where((t) => t.completed).length;
                   }
+
                   //container seluruh halaman
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -189,142 +194,184 @@ class _TaskListPageState extends State<TaskListPage> {
             builder: (context, state) {
               if (state is TaskLoading) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is TaskLoaded) {
-                final tasks = state.tasks;
+              } else if (state is TaskLoaded || state is TaskFailure) {
+                final tasks = (state is TaskLoaded)
+                    ? state.tasks
+                    : (state as TaskFailure).tasks;
 
-                return ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                  itemCount:
-                      tasks.length + 1, // +1 untuk baris "tambahkan data"
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return GestureDetector(
-                        onTap: () {
-                          showCreateTaskSheet(context);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurple.withValues(
-                              alpha: 0.08,
-                            ), // transparan
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.deepPurple.withValues(alpha: 0.3),
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<TaskBloc>().add(LoadTaskEvent());
+                  },
+                  child: ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                    itemCount: tasks.length + 1,
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return GestureDetector(
+                          onTap: () {
+                            showCreateTaskSheet(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple.withValues(
+                                alpha: 0.08,
+                              ), // transparan
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.deepPurple.withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.add, color: Colors.deepPurple),
+                                SizedBox(width: 6),
+                                Text(
+                                  "Add New Task",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.deepPurple,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(Icons.add, color: Colors.deepPurple),
-                              SizedBox(width: 6),
-                              Text(
-                                "Add New Task",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.deepPurple,
+                        );
+                      }
+
+                      final task = tasks[index - 1];
+                      return Dismissible(
+                        key: ValueKey(task.id),
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                        onDismissed: (_) {
+                          context.read<TaskBloc>().add(
+                            DeleteTaskEvent(task.id),
+                          );
+                        },
+                        child: GestureDetector(
+                          onTap: () {
+                            showUpdateTaskSheet(context, task);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  borderRadius: BorderRadius.circular(50),
+                                  onTap: () {
+                                    // logika toggle ubah status task selesai/belum selesai
+                                    final updateTask = Task(
+                                      userId: task.userId,
+                                      id: task.id,
+                                      title: task.title,
+                                      completed: !task.completed,
+                                    );
+                                    context.read<TaskBloc>().add(
+                                      UpdateTaskEvent(updateTask),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 26,
+                                    height: 26,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.grey.shade400,
+                                        width: 1.5,
+                                      ),
+                                      color: task.completed
+                                          ? Colors.deepPurple
+                                          : Colors.transparent,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showUpdateTaskSheet(context, task);
+                                    },
+                                    child: Text(
+                                      task.title,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: task.completed
+                                            ? Colors.grey
+                                            : Colors.black,
+                                        decoration: task.completed
+                                            ? TextDecoration.lineThrough
+                                            : TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
-                    }
-
-                    final task = tasks[index - 1];
-                    return Dismissible(
-                      key: ValueKey(task.id),
-                      direction: DismissDirection.endToStart,
-                      background: Container(
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(Icons.delete, color: Colors.white),
-                      ),
-                      onDismissed: (_) {
-                        context.read<TaskBloc>().add(DeleteTaskEvent(task.id));
-                      },
-                      child: GestureDetector(
-                        onTap: () {
-                          showUpdateTaskSheet(context, task);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            children: [
-                              InkWell(
-                                borderRadius: BorderRadius.circular(50),
-                                onTap: () {
-                                  // logika toggle ubah status task selesai/belum selesai
-                                  final updateTask = Task(
-                                    userId: task.userId,
-                                    id: task.id,
-                                    title: task.title,
-                                    completed: !task.completed,
-                                  );
-                                  context.read<TaskBloc>().add(
-                                    UpdateTaskEvent(updateTask),
-                                  );
-                                },
-                                child: Container(
-                                  width: 26,
-                                  height: 26,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Colors.grey.shade400,
-                                      width: 1.5,
-                                    ),
-                                    color: task.completed
-                                        ? Colors.deepPurple
-                                        : Colors.transparent,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    showUpdateTaskSheet(context, task);
-                                  },
-                                  child: Text(
-                                    task.title,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: task.completed
-                                          ? Colors.grey
-                                          : Colors.black,
-                                      decoration: task.completed
-                                          ? TextDecoration.lineThrough
-                                          : TextDecoration.none,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                    },
+                  ),
                 );
               } else if (state is TaskError) {
-                return Center(child: Text("Error: ${state.message}"));
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.wifi_off, size: 64, color: Colors.grey),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Whoops!!',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'No Internet connection was found. \nCheck your connection or try again.',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                        softWrap: true,
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          context.read<TaskBloc>().add(LoadTaskEvent());
+                        },
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Try Again'),
+                      ),
+                    ],
+                  ),
+                );
               }
               return const Center(child: Text("Empty Data!"));
             },

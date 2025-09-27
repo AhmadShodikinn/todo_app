@@ -27,7 +27,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         final tasks = await getTasks();
         emit(TaskLoaded(tasks));
       } catch (e) {
-        emit(TaskError(e.toString()));
+        emit(TaskError("Failed to load task"));
       }
     });
 
@@ -42,8 +42,16 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           emit(TaskSuccess(updatedTasks, 'Task added successfully'));
           emit(TaskLoaded(updatedTasks));
         } catch (e) {
-          emit(TaskError('Failed to add task: ${e.toString()}'));
-          // emit(TaskFailure(currentState.tasks, 'Failed to delete task'));
+          // ubah penggunaan task error ke task failure (jaga jaga semisal pengguna kehilangan koneksi ketika ingin melakukan aksi)
+
+          // emit(TaskError('Failed to add task: ${e.toString()}'));
+          emit(
+            TaskFailure(
+              currentState.tasks,
+              'Failed to add task, refresh and try again',
+            ),
+          );
+          emit(TaskLoaded(currentState.tasks));
         }
       }
     });
@@ -60,10 +68,13 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           emit(TaskSuccess(updatedTasks, 'Task updated successfully'));
           emit(TaskLoaded(updatedTasks));
         } catch (e) {
-          emit(TaskError('Failed to update task'));
-
-          emit(TaskLoaded(currentState.tasks));
-          // emit(TaskFailure(currentState.tasks, 'Failed to update task'));
+          // emit(TaskError('Failed to update task'));
+          emit(
+            TaskFailure(
+              currentState.tasks,
+              'Failed to update task, refresh and try again',
+            ),
+          );
         }
       }
     });
@@ -79,8 +90,13 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           emit(TaskSuccess(updatedTasks, 'Task deleted successfully'));
           emit(TaskLoaded(updatedTasks));
         } catch (e) {
-          emit(TaskError('Failed to delete task: ${e.toString()}'));
-          // emit(TaskFailure(currentState.tasks, 'Failed to delete task'));
+          // emit(TaskError('Failed to delete task: ${e.toString()}'));
+          emit(
+            TaskFailure(
+              currentState.tasks,
+              'Failed to delete task, refresh and try again',
+            ),
+          );
         }
       }
     });
